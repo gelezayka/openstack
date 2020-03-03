@@ -97,10 +97,10 @@ class Service extends AbstractService
     /**
      * Shows A Quota for a tenant.
      */
-    public function getQuotaSet(string $tenantId): QuotaSet
+    public function getQuotaSet(string $tenantId, $usage = false): QuotaSet
     {
         $quotaSet = $this->model(QuotaSet::class);
-        $quotaSet->populateFromResponse($this->execute($this->api->getQuotaSet(), ['tenantId' => $tenantId]));
+        $quotaSet->populateFromResponse($this->execute($this->api->getQuotaSet(), ['tenantId' => $tenantId, 'usage'=>$usage]));
 
         return $quotaSet;
     }

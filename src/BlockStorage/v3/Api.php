@@ -276,6 +276,7 @@ class Api extends AbstractApi
             'path'   => 'os-quota-sets/{tenantId}',
             'params' => [
                 'tenantId' => $this->params->idPath('quota-sets'),
+                'usage' => $this->params->usage(),
             ],
         ];
     }

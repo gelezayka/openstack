@@ -202,6 +202,14 @@ TYPEOTHER
             'documented'  => false,
         ];
     }
+    public function usage(): array
+    {
+        return [
+            'type'        => self::BOOL_TYPE,
+            'location'    => self::QUERY,
+            'description' => 'Show project’s quota usage information.',
+        ];
+    }
 
     public function typeSpecs(): array
     {
