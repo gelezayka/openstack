@@ -29,6 +29,29 @@ abstract class OperatorResource extends AbstractResource implements OperatorInte
      */
     protected $markerKey;
 
+    /** @var array */
+    private $data = [];
+
+    public function __get($varName)
+    {
+        if (property_exists($this, $varName)) {
+            return $this->{$varName};
+        } elseif (array_key_exists($varName,$this->data)) {
+            return $this->data[$varName];
+        } else {
+            throw new Exception('Field ' . $varName . ' not found in ' . get_class($this));
+        }
+    }
+
+    public function __set($varName, $value)
+    {
+        if (property_exists($this, $varName)) {
+            $this->{$varName} = $value;
+        } else {
+            $this->data[$varName] = $value;
+        }
+    }
+
     /**
      * Will create a new instance of this class with the current HTTP client and API injected in. This
      * is useful when enumerating over a collection since multiple copies of the same resource class

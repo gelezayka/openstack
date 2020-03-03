@@ -54,8 +54,9 @@ class QuotaSet extends OperatorResource implements Retrievable, Updateable, Dele
         'snapshots_iscsi'      => 'snapshotsIscsi',
         'volumes_iscsi'        => 'volumesIscsi',
         'id'                   => 'tenantId',
+        '/gigabytes_(.*)/'     => 'gigabytes_$1'
     ];
-
+    
     protected $resourceKey = 'quota_set';
 
     /**

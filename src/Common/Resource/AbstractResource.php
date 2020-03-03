@@ -64,14 +64,30 @@ abstract class AbstractResource implements ResourceInterface, Serializable
         foreach ($array as $key => $val) {
             $alias = $aliases[$key] ?? false;
 
+            if (empty($alias)) {
+                foreach ($aliases as $a) {
+                    if ($a->match($key)) {
+                        $alias = $a;
+                        break;
+                    }
+                }
+            }
+
+            $dymanic = false;
             if ($alias instanceof Alias) {
-                $key = $alias->propertyName;
+                $dymanic = $alias->isRegex();
+                if (!$dymanic) {
+                    $key = $alias->propertyName;
+                }
                 $val = $alias->getValue($this, $val);
             }
 
-            if (property_exists($this, $key)) {
+            if ($dymanic) {
+                $this->{$key} = $val;
+            } elseif (property_exists($this, $key)) {
                 $this->{$key} = $val;
             }
+
         }
 
         return $this;
@@ -87,7 +103,7 @@ abstract class AbstractResource implements ResourceInterface, Serializable
         $aliases = [];
 
         foreach ((array) $this->aliases as $alias => $property) {
-            $aliases[$alias] = new Alias($property);
+            $aliases[$alias] = new Alias($property, null, false, $alias);
         }
 
         return $aliases;
@@ -156,7 +172,11 @@ abstract class AbstractResource implements ResourceInterface, Serializable
 
             $output->{$name} = $fn($val);
         }
-
+        if (is_array($this->data) && count($this->data) > 0) {
+            foreach ($this->data as $key => $value) {
+                $output->{$key} = $value;
+            }
+        }
         return $output;
     }
 }

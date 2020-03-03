@@ -22,15 +22,43 @@ class Alias
     private $className;
 
     /**
+     * @var boolean
+     */
+    private $isRegex;
+
+    /**
+     * @var string
+     */
+    private $key;
+
+    /**
      * @param string      $propertyName A name of the property in target resource class
      * @param string|null $className    A class name for the property value
      * @param bool        $list         Whether value of the property should be treated as a list or not
      */
-    public function __construct(string $propertyName, string $className = null, bool $list = false)
+    public function __construct(string $propertyName, string $className = null, bool $list = false, $key = null)
     {
+        if (!empty($key)) {
+            $this->isRegex = preg_match("/^\/[\s\S]+\/$/", $key);
+        }
+        $this->key = $key;
         $this->isList       = $list;
         $this->propertyName = $propertyName;
         $this->className    = $className && class_exists($className) ? $className : null;
+    }
+
+    public function match($value)
+    {
+        if ($this->isRegex) {
+            return preg_match($this->key, $value);
+        } else {
+            return $this->key === $value;
+        }
+    }
+
+    public function isRegex()
+    {
+        return $this->isRegex;
     }
 
     /**
